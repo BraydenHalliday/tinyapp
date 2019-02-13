@@ -18,7 +18,12 @@
     <!-- sAdd EJS code here -->
     <!--   display a list or table (loop through) -->
   <li><%= `shortURL: ${shortURL} -----> real URL: ${longURL}` %> </li>
-  <a href= "/">Go Home</a>
 
+
+    <form method='POST' action='/urls/<%=shortURL%>/update'/ name='longURL'>
+      <input type="text" value='' name='newURL'>
+      <button type = 'submit'>submit changes</button>
+    </form>
+<a href= "/">Go Home</a>
 </body>
 </html>

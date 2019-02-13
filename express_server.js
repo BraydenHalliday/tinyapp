@@ -46,7 +46,6 @@ app.post("/urls", (req, res) => {
 
 app.post("/urls/:sid/delete", (req, res) => {
   delete urlDatabase[req.params.sid]
-
   res.redirect('/urls');
 });
 
@@ -76,6 +75,21 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 
 });
+
+
+
+app.post("/urls/:shortURL/update", (req, res) => {
+// take in form answer
+// replace value for provided key
+let a = req.params.shortURL
+urlDatabase[req.params.shortURL] = req.body.newURL
+// redirect back to form
+console.log(urlDatabase)
+res.redirect("/urls/" + req.params.shortURL)
+});
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
