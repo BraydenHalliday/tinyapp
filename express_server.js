@@ -33,9 +33,13 @@ app.get("/urls", (req, res) => {
   res.render('urls_index', templateVars)
 });
 
+// edit the post so shortURL-longURL key-value pair are saved to the urlDatabase
+
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  let rand = generateRandomString()
+  urlDatabase[rand] = req.body.longURL;
+  console.log(urlDatabase);  // Log the POST request body to the console
+  res.redirect(`/urls/${rand}`);         // Respond with 'Ok' (we will replace this)
 });
 
 
