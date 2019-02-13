@@ -20,15 +20,17 @@ background-color: #87ceeb
     <!--   display a list or table (loop through) -->
 
 <%  for(let elem in urls) { %>
-        <li><%= `short URL: ${elem} -----> real URL: ${urls[elem]}` %> </li>
+
 
 
 
 
   <form method='post' action='/urls/<%= elem %>/delete'/>
+    <li><%= `short URL: ${elem} -----> real URL: ${urls[elem]}` %> </li>
     <input type="submit" value='Delete'>
-
+     <a href= "/urls/<%= elem %>">Edit</a>
   </form>
+
 
 
 
