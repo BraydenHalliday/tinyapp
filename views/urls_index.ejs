@@ -6,11 +6,16 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <title>TinyApp</title>
+  <style>
+body {
+background-color: #87ceeb
+}
+</style>
 </head>
 <body style="font-size:20px; padding:50px;">
 
   <%- include("./partials/_header.ejs") %>
-  <a href= ''>shorten URL</a>
+  <a href= "/urls/new">shorten new URL</a>
     <!-- Add EJS code here -->
     <!--   display a list or table (loop through) -->
 
@@ -20,7 +25,7 @@
     <% }; %>
        <!--  <p> <%= urls %> -->
 
-
+<a href= "/">Go Home</a>
    <!-- a link for shortening url (is dead) -->
 </body>
 </html>

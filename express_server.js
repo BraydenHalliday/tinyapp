@@ -17,7 +17,8 @@ function generateRandomString() {
 }
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  let templateVars = { urls: urlDatabase};
+  res.render('urls_home', templateVars)
 });
 
 /*app.get("/urls.json", (req, res) => {
@@ -66,6 +67,7 @@ app.get("/urls/:shortURL", (req, res) => {
    shortURL: req.params.shortURL,
   longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
+
 });
 
 app.listen(PORT, () => {
