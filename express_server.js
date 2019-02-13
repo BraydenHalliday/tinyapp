@@ -44,6 +44,13 @@ app.post("/urls", (req, res) => {
 });
 
 
+app.post("/urls/:sid/delete", (req, res) => {
+  delete urlDatabase[req.params.sid]
+
+  res.redirect('/urls');
+});
+
+
 
 
 
