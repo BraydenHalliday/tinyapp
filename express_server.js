@@ -187,7 +187,11 @@ app.get("/urls/new", (req, res) => {
   let templateVars = {
     Uobject: users[req.cookies["user_id"]]
   };
+  if(req.cookies["user_id"]) {
   res.render("urls_new", templateVars);
+} else {
+  res.redirect('/login')
+}
 });
 
 
