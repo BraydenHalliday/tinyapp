@@ -2,4 +2,21 @@
   <h1>
     Tiny App
   </h1>
+    <%if (username) {%>
+<h4> <%=username %></h4>
+       <form method='post' action='/logout'/>
+    <input type="submit" value='Logout'>
+
+  </form>
+    <% } else { %>
+        <form class="form-inline" action="/login" method="POST">
+      <div class="form-group mb-2">
+        <label for="username">Enter your username:</label>
+        <input class="form-control" type="text" value='' name="username" placeholder="" style="width: 300px; margin: 1em">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+    <% } %>
+
 </header>
+
