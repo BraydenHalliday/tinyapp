@@ -31,8 +31,6 @@ function generateRandomString() {
   return Math.random().toString(36).replace('0.', '').substr(0, 6);
 }
 function lookupemail(Nemail) {
-  console.log(Nemail)
-  console.log(users)
   for(keys in users) {
   if(users[keys].email === Nemail) {
     return true
@@ -41,7 +39,18 @@ function lookupemail(Nemail) {
 
 }
 return false
+};
+function retidfremail(Nemail) {
+  for(keys in users) {
+  if(users[keys].email === Nemail) {
+    return users[keys].id
+
+  }
+
 }
+return false
+};
+
 // start of endpoint
 
 // add
@@ -88,19 +97,41 @@ else {
 
 })
 
+app.get("/login", (req, res) => {
+  let templateVars = {
 
-// create a post to /login to set a cookie
-// named username to the vlaue from the request body
-//after cookie hasd bein set redirect to /urls
+    Uobject: users[req.cookies["user_id"]]
+  };
+  res.render('urls_login', templateVars)
+});
+
+
+
+
 app.post("/login", (req, res) => {
+  // look up email
+  if(!lookupemail(req.body.email)) {
+    //if email cant be found send 403
+    res.status(400);
+    res.send('non exsistant email')
+  }
+  //works
+  else if(users[retidfremail(req.body.email)].password !== req.body.password) {
+    res.status(400);
+    res.send('wrong password')
+  }
+  else {
+    res.cookie('user_id', retidfremail(req.body.email))
+    res.redirect('/urls')
+  }
+  //if email is found compare the password if it doenst match send 403
+  // if both pass set cookie and redirect to url
 
-res.cookie('username', req.body.username)
-res.redirect("/urls/")
 });
 
 app.post("/logout", (req, res) => {
 
-res.clearCookie('username')
+res.clearCookie('user_id')
 res.redirect("/urls/")
 });
 
