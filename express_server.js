@@ -42,17 +42,21 @@ function lookupemail(Nemail) {
 }
 return false
 }
+// start of endpoint
+
+// add
 
 app.get("/register", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+
+    Uobject: users[req.cookies["user_id"]]
   };
   res.render('urls_register', templateVars)
 });
 
 app.post('/register', (req,res) => {
   let templateVars = {
-    username: req.cookies["username"]
+    Uobject: users[req.cookies["user_id"]]
   };
   if (lookupemail(req.body.email)) {
   res.status(400);
@@ -103,7 +107,7 @@ res.redirect("/urls/")
 app.get("/", (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"],
+    Uobject: users[req.cookies["user_id"]],
   };
   res.render('urls_home', templateVars)
 });
@@ -123,7 +127,7 @@ app.get("/hello", (req, res) => {
 app.get("/urls", (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"]
+    Uobject: users[req.cookies["user_id"]]
   };
   res.render('urls_index', templateVars)
 });
@@ -150,7 +154,7 @@ app.post("/urls/:sid/delete", (req, res) => {
 // new one
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"]
+    Uobject: users[req.cookies["user_id"]]
   };
   res.render("urls_new", templateVars);
 });
@@ -169,7 +173,7 @@ app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
    shortURL: req.params.shortURL,
   longURL: urlDatabase[req.params.shortURL],
-  username: req.cookies["username"] };
+  Uobject: users[req.cookies["user_id"]] };
   res.render("urls_show", templateVars);
 
 });
