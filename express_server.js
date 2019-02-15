@@ -248,7 +248,7 @@ app.get("/urls/:shortURL", (req, res) => {
   };
 
 console.log(req.cookies["user_id"])
-console.log(urlDatabase[req.params.shortURL].userid)
+// console.log(urlDatabase[req.params.shortURL].userid)
 
   if(req.cookies["user_id"]) {
       if(req.cookies["user_id"] === urlDatabase[req.params.shortURL].userid) {
@@ -257,7 +257,7 @@ console.log(urlDatabase[req.params.shortURL].userid)
   else {
     res.send('thats not your link')
   }
-    res.render("urls_show", templateVars);
+
   }
   else {
     res.redirect('/login')
