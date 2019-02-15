@@ -84,8 +84,8 @@ app.post('/register', (req,res) => {
  // users[randid].passwords = req.body.password
   res.cookie('user_id', randid)
   res.redirect('/urls')
-  console.log(users)
-  console.log(lookupemail(req.body.email))
+  // console.log(users)
+  // console.log(lookupemail(req.body.email))
 }
 else if(!req.body.email || !req.body.password){
   res.status(400);
@@ -158,17 +158,18 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls", (req, res) => {
   let cook = req.cookies.user_id
-
-
+console.log("FUll Urls DB", JSON.stringify(urlDatabase, null, 2))
+const userUrls = {};
   for(let key in urlDatabase) {
     if(urlDatabase[key].userid === cook) {
-      perdata[key] = urlDatabase[key];
+      userUrls[key] = urlDatabase[key];
 
     }
-}
-console.log(perdata)
+  }
+
+// console.log(userUrls)
   let templateVars = {
-    urls: perdata,
+    urls: userUrls,
     Uobject: users[req.cookies["user_id"]]
   };
 
@@ -191,19 +192,23 @@ app.post("/urls", (req, res) => {
 }
 //console.log()
 //  urlDatabase[rand] = req.body.longURL;
-  console.log(urlDatabase);  // Log the POST request body to the console
+// Log the POST request body to the console
   res.redirect(`/urls/${rand}`);         // Respond with 'Ok' (we will replace this)
 });
 
 
-app.post("/urls/:sid/delete", (req, res) => {
+app.post("/urls/:shortURL/delete", (req, res) => {
   let cook = req.cookies.user_id
-  if (urlDatabase[req.params.sid].userid === cook) {
-  delete urlDatabase[req.params.sid]
+
+  if (urlDatabase[req.params.shortURL].userid === cook) {
+console.log('this is the', JSON.stringify(urlDatabase, null, 2))
+  delete urlDatabase[req.params.shortURL]
+console.log('this is the AFTYER', JSON.stringify(urlDatabase, null, 2))
+
   res.redirect('/urls');}
   else {
     res.status(418)
-    res.send('you dirty bird')
+    res.send('not aloud access')
   }
 
 });
@@ -227,7 +232,7 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get("/u/:shortURL", (req, res) => {
-  const longURL1 = urlDatabase[req.params.shortURL]
+  const longURL1 = perdata[req.params.shortURL].longURL
 
   res.redirect(longURL1);
 });
@@ -236,10 +241,28 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
-   shortURL: req.params.shortURL,
-  longURL: urlDatabase[req.params.shortURL].longURL,
-  Uobject: users[req.cookies["user_id"]] };
-  res.render("urls_show", templateVars);
+    URLs: urlDatabase,
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL].longURL,
+    Uobject: users[req.cookies["user_id"]]
+  };
+
+console.log(req.cookies["user_id"])
+console.log(urlDatabase[req.params.shortURL].userid)
+
+  if(req.cookies["user_id"]) {
+      if(req.cookies["user_id"] === urlDatabase[req.params.shortURL].userid) {
+    res.render("urls_show", templateVars)
+  }
+  else {
+    res.send('thats not your link')
+  }
+    res.render("urls_show", templateVars);
+  }
+  else {
+    res.redirect('/login')
+  }
+
 
 });
 
@@ -250,7 +273,7 @@ app.post("/urls/:shortURL/update", (req, res) => {
 // replace value for provided key
 let cook = req.cookies.user_id
   if (urlDatabase[req.params.shortURL].userid === cook) {
-  urlDatabase[req.params.shortURL] = req.body.newURL
+  urlDatabase[req.params.shortURL].longURL = req.body.newURL
 console.log(urlDatabase)
 res.redirect("/urls/" + req.params.shortURL)
 }
@@ -258,11 +281,7 @@ res.redirect("/urls/" + req.params.shortURL)
     res.status(418)
     res.send('you dirty bird')
   }
-})
-
-
-
-
+});
 
 
 
