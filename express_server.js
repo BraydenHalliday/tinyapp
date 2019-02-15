@@ -7,8 +7,8 @@ var PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
 
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {longURL:"http://www.lighthouselabs.ca", userid: 'userRandomID'},
+  "9sm5xK": {longURL:"http://www.google.com", userid: 'user2RandomID'}
 };
 
 const users = {
@@ -156,18 +156,40 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  let cook = req.cookies.user_id
+  let perdata = {}
+
+  for(let key in urlDatabase) {
+    if(urlDatabase[key].userid === cook) {
+      perdata[key] = urlDatabase[key];
+
+    }
+}
+console.log(perdata)
   let templateVars = {
-    urls: urlDatabase,
+    urls: perdata,
     Uobject: users[req.cookies["user_id"]]
   };
-  res.render('urls_index', templateVars)
+
+  if(cook) {
+
+    res.render('urls_index', templateVars)
+  } else {
+    res.redirect('/login')
+  }
 });
 
 // edit the post so shortURL-longURL key-value pair are saved to the urlDatabase
 
 app.post("/urls", (req, res) => {
   let rand = generateRandomString()
-  urlDatabase[rand] = req.body.longURL;
+  let cook = req.cookies.user_id
+  urlDatabase[rand] = {
+    longURL: req.body.longURL,
+    userid: cook
+}
+//console.log()
+//  urlDatabase[rand] = req.body.longURL;
   console.log(urlDatabase);  // Log the POST request body to the console
   res.redirect(`/urls/${rand}`);         // Respond with 'Ok' (we will replace this)
 });
@@ -207,7 +229,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
    shortURL: req.params.shortURL,
-  longURL: urlDatabase[req.params.shortURL],
+  longURL: urlDatabase[req.params.shortURL].longURL,
   Uobject: users[req.cookies["user_id"]] };
   res.render("urls_show", templateVars);
 

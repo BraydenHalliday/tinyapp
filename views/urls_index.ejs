@@ -26,9 +26,12 @@ background-color: #4EFEC8
 
 
   <form method='post' action='/urls/<%= elem %>/delete'/>
-    <li>short URL: <a href= <%=urls[elem]%>><%=elem%></a> -----> real URL:  <a href= <%=urls[elem]%>><%=urls[elem]%> </li>
+    <li>
+      short URL: <a href="<%=urls[elem].longURL%>"><%=elem%></a> -----> long URL:
+      <a href="<%=urls[elem].longURL%>"><%= urls[elem].longURL %></a>
+    </li>
     <input type="submit" value='Delete'>
-     <a href= "/urls/<%= elem %>">Edit</a>
+     <a href= "/urls/<%= elem%>">Edit</a>
 
   </form>
 
