@@ -23,6 +23,7 @@ const users = {
     password: "dishwasher-funk"
   }
 };
+var perdata = {}
 // new module
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -157,7 +158,7 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls", (req, res) => {
   let cook = req.cookies.user_id
-  let perdata = {}
+
 
   for(let key in urlDatabase) {
     if(urlDatabase[key].userid === cook) {
@@ -196,8 +197,15 @@ app.post("/urls", (req, res) => {
 
 
 app.post("/urls/:sid/delete", (req, res) => {
+  let cook = req.cookies.user_id
+  if (urlDatabase[req.params.sid].userid === cook) {
   delete urlDatabase[req.params.sid]
-  res.redirect('/urls');
+  res.redirect('/urls');}
+  else {
+    res.status(418)
+    res.send('you dirty bird')
+  }
+
 });
 
 
@@ -240,12 +248,20 @@ app.get("/urls/:shortURL", (req, res) => {
 app.post("/urls/:shortURL/update", (req, res) => {
 // take in form answer
 // replace value for provided key
-let a = req.params.shortURL
-urlDatabase[req.params.shortURL] = req.body.newURL
-// redirect back to form
+let cook = req.cookies.user_id
+  if (urlDatabase[req.params.shortURL].userid === cook) {
+  urlDatabase[req.params.shortURL] = req.body.newURL
 console.log(urlDatabase)
 res.redirect("/urls/" + req.params.shortURL)
-});
+}
+  else {
+    res.status(418)
+    res.send('you dirty bird')
+  }
+})
+
+
+
 
 
 
