@@ -3,8 +3,8 @@ var cookieParser = require('cookie-parser');
 var app = express();
 app.use(cookieParser())
 var PORT = 8080; // default port 8080
-
 app.set("view engine", "ejs");
+ const bcrypt = require('bcrypt');
 
 var urlDatabase = {
   "b2xVn2": {longURL:"http://www.lighthouselabs.ca", userid: 'userRandomID'},
@@ -68,16 +68,20 @@ app.post('/register', (req,res) => {
   let templateVars = {
     Uobject: users[req.cookies["user_id"]]
   };
+
+const password = req.body.password; // found in the req.params object
+const hashedPassword = bcrypt.hashSync(password, 10);
   if (lookupemail(req.body.email)) {
   res.status(400);
   res.send('Error 400 exsisting user');
 }
   else if (req.body.email && req.body.password) {
+
   let randid = generateRandomString()
   users[randid] = {
     id : randid,
     email : req.body.email,
-    password : req.body.password};
+    password : hashedPassword};
   //users[randid] = randid
  // users.id = randid
   //users[randid].email = req.body.email
@@ -117,13 +121,13 @@ app.post("/login", (req, res) => {
     res.send('non exsistant email')
   }
   //works
-  else if(users[retidfremail(req.body.email)].password !== req.body.password) {
-    res.status(400);
-    res.send('wrong password')
+  else if(bcrypt.compareSync(req.body.password, users[retidfremail(req.body.email)].password)) {
+   res.cookie('user_id', retidfremail(req.body.email))
+    res.redirect('/urls')
   }
   else {
-    res.cookie('user_id', retidfremail(req.body.email))
-    res.redirect('/urls')
+
+    res.redirect('/login')
   }
   //if email is found compare the password if it doenst match send 403
   // if both pass set cookie and redirect to url
@@ -201,9 +205,9 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   let cook = req.cookies.user_id
 
   if (urlDatabase[req.params.shortURL].userid === cook) {
-console.log('this is the', JSON.stringify(urlDatabase, null, 2))
+
   delete urlDatabase[req.params.shortURL]
-console.log('this is the AFTYER', JSON.stringify(urlDatabase, null, 2))
+
 
   res.redirect('/urls');}
   else {
