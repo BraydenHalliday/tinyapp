@@ -39,34 +39,26 @@ app.use(bodyParser.urlencoded({extended: true}));
 function generateRandomString() {
   return Math.random().toString(36).replace('0.', '').substr(0, 6);
 }
+
 function lookupemail(Nemail) {
   for(keys in users) {
-  if(users[keys].email === Nemail) {
-    return true
-    console.log('the email exsists')
+    if(users[keys].email === Nemail) {
+      return true
+   }
   }
-
-}
-return false
+  return false
 };
+
 function retidfremail(Nemail) {
   for(keys in users) {
   if(users[keys].email === Nemail) {
     return users[keys].id
-
+    }
   }
-
-}
-return false
+  return false
 };
-
-// start of endpoint
-
-// add
-
 app.get("/register", (req, res) => {
   let templateVars = {
-
     Uobject: users[req.session.user_id]
   };
   res.render('urls_register', templateVars)
@@ -76,74 +68,56 @@ app.post('/register', (req,res) => {
   let templateVars = {
     Uobject: users[req.session.user_id]
   };
-
-const password = req.body.password; // found in the req.params object
-const hashedPassword = bcrypt.hashSync(password, 10);
+  const password = req.body.password; 
+  const hashedPassword = bcrypt.hashSync(password, 10);
   if (lookupemail(req.body.email)) {
-  res.status(400);
-  res.send('Error 400 exsisting user');
+    res.status(400);
+    res.send('Error 400 exsisting user');
   }
   else if (req.body.email && req.body.password) {
-
-  let randid = generateRandomString()
-
-  users[randid] = {
-    id : randid,
-    email : req.body.email,
-    password : hashedPassword};
- req.session.user_id = randid;
-
-  res.redirect('/urls')
-  // console.log(users)
-  // console.log(lookupemail(req.body.email))
-}
-else if(!req.body.email || !req.body.password){
-  res.status(400);
-  res.send('Error 400 empty fields');
-}
-else {
- res.status(400);
-  res.send('unexpected error');
-}
-
+    let randid = generateRandomString()
+      users[randid] = {
+        id : randid,
+        email : req.body.email,
+        password : hashedPassword
+      };
+    req.session.user_id = randid;
+    res.redirect('/urls')
+  }
+  else if(!req.body.email || !req.body.password){
+    res.status(400);
+    res.send('Error 400 empty fields');
+  }
+  else {
+    res.status(400);
+    res.send('unexpected error');
+    }
 })
 
 app.get("/login", (req, res) => {
   let templateVars = {
-
     Uobject: users[req.session.user_id]
   };
   res.render('urls_login', templateVars)
 });
 
-
-
-
 app.post("/login", (req, res) => {
-  // look up email
   if(!lookupemail(req.body.email)) {
-    //if email cant be found send 403
     res.status(400);
     res.send('non exsistant email')
   }
-  //works
   else if(bcrypt.compareSync(req.body.password, users[retidfremail(req.body.email)].password)) {
      req.session.user_id = retidfremail(req.body.email)
     res.redirect('/urls')
   }
   else {
-
     res.redirect('/login')
   }
-  //if email is found compare the password if it doenst match send 403
-  // if both pass set cookie and redirect to url
-
 });
 
 app.post("/logout", (req, res) => {
-
-req.session.user_id = null
-res.redirect("/urls/")
+  req.session.user_id = null
+  res.redirect("/urls/")
 });
 
 app.get("/", (req, res) => {
@@ -153,27 +127,20 @@ app.get("/", (req, res) => {
   };
   res.render('urls_home', templateVars)
 });
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
 
 app.get("/urls", (req, res) => {
   let cook = req.session.user_id
-
-const userUrls = {};
+  const userUrls = {};
   for(let key in urlDatabase) {
     if(urlDatabase[key].userid === cook) {
       userUrls[key] = urlDatabase[key];
-
     }
   }
   let templateVars = {
     urls: userUrls,
     Uobject: users[req.session.user_id]
   };
-
   if(cook) {
-
     res.render('urls_index', templateVars)
   } else {
     res.redirect('/login')
@@ -186,21 +153,20 @@ app.post("/urls", (req, res) => {
   urlDatabase[rand] = {
     longURL: req.body.longURL,
     userid: cook
-}
+  }
   res.redirect(`/urls/${rand}`);         
 });
-
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   let cook = req.session.user_id
   if (urlDatabase[req.params.shortURL].userid === cook) {
-  delete urlDatabase[req.params.shortURL]
-  res.redirect('/urls');}
+    delete urlDatabase[req.params.shortURL]
+    res.redirect('/urls');
+  }
   else {
     res.status(418)
     res.send('not aloud access')
   }
-
 });
 
 app.get("/urls/new", (req, res) => {
@@ -208,17 +174,17 @@ app.get("/urls/new", (req, res) => {
     Uobject: users[req.session.user_id]
   };
   if(req.session.user_id) {
-  res.render("urls_new", templateVars);
-} else {
-  res.redirect('/login')
-}
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect('/login')
+  }
 });
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL1 = perdata[req.params.shortURL].longURL
-
   res.redirect(longURL1);
 });
+
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
     URLs: urlDatabase,
@@ -228,27 +194,26 @@ app.get("/urls/:shortURL", (req, res) => {
   };
   if(req.session.user_id) {
       if(req.session.user_id === urlDatabase[req.params.shortURL].userid) {
-    res.render("urls_show", templateVars)
-  }
-  else {
-    res.send('thats not your link')
-  }
-  }
-  else {
-    res.redirect('/login')
-  }
+        res.render("urls_show", templateVars)
+      } else {
+        res.send('thats not your link')
+      }
+  } else {
+      res.redirect('/login')
+    }
 });
+
 app.post("/urls/:shortURL/update", (req, res) => {
-let cook = req.session.user_id
+  let cook = req.session.user_id
   if (urlDatabase[req.params.shortURL].userid === cook) {
-  urlDatabase[req.params.shortURL].longURL = req.body.newURL
-console.log(urlDatabase)
-res.redirect("/urls/" + req.params.shortURL)
+    urlDatabase[req.params.shortURL].longURL = req.body.newURL
+    res.redirect("/urls/" + req.params.shortURL)
   } else {
     res.status(418)
     res.send('not aloud acces')
   }
 });
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
