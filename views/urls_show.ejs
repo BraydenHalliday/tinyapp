@@ -15,12 +15,7 @@
 <body style="font-size:20px; padding:50px;">
   <%- include("./partials/_header.ejs") %>
   <a href="/urls/new"> shorten new URL</a>
-    <!-- sAdd EJS code here -->
-    <!--   display a list or table (loop through) -->
-
   <li>short URL: <a href= "<%=longURL%>"><%=shortURL%></a> ----> real URL:<a href="<%=longURL%>"><%=longURL%></a> </li>
-
-
 
     <form method='POST' action='/urls/<%=shortURL%>/update'/ name='longURL'>
       <input type="text" value='' name='newURL'>

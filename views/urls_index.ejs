@@ -16,15 +16,7 @@ background-color: #4EFEC8
 
   <%- include("./partials/_header.ejs") %>
   <a href= "/urls/new">shorten new URL</a>
-    <!-- Add EJS code here -->
-    <!--   display a list or table (loop through) -->
-
 <%  for(let elem in urls) { %>
-
-
-
-
-
   <form method='post' action='/urls/<%= elem %>/delete'/>
     <li>
       short URL: <a href="<%=urls[elem].longURL%>"><%=elem%></a> -----> long URL:
@@ -32,16 +24,8 @@ background-color: #4EFEC8
     </li>
     <input type="submit" value='Delete'>
      <a href= "/urls/<%= elem%>">Edit</a>
-
   </form>
-
-
-
-
     <% }; %>
-       <!--  <p> <%= urls %> -->
-
 <a href= "/">Go Home</a>
-   <!-- a link for shortening url (is dead) -->
 </body>
 </html>

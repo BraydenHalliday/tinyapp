@@ -3,8 +3,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <!-- Bootstrap CSS -->
-
   <title>TinyApp</title>
   <style>
 body {
@@ -13,23 +11,14 @@ background-color: #4EFEC8
 </style>
 </head>
 <body style="font-size:20px; padding:50px;">
-
   <%- include("./partials/_header.ejs") %>
   <h3> The premiere URL shortening application </h3>
-
 <form action="/urls/new">
     <input type="submit" value="shorten new URL" />
 </form>
   <form action="/urls">
     <input type="submit" value="view your libary" />
 </form>
-
-
-       <!--  <p> <%= urls %> -->
-
 <h6> coded by: Brayden Halliday </h6>
-
-
-   <!-- a link for shortening url (is dead) -->
 </body>
 </html>
