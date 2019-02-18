@@ -66,13 +66,14 @@ app.get("/register", (req, res) => {
 
 app.post('/register', (req,res) => {
   let templateVars = {
-    Uobject: users[req.session.user_id]
+    Uobject: users[req.session.user_id],
   };
   const password = req.body.password; 
   const hashedPassword = bcrypt.hashSync(password, 10);
   if (lookupemail(req.body.email)) {
     res.status(400);
-    res.send('Error 400 exsisting user');
+    res.send('exsisting user');
+   
   }
   else if (req.body.email && req.body.password) {
     let randid = generateRandomString()
