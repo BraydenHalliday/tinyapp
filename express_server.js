@@ -82,7 +82,7 @@ const hashedPassword = bcrypt.hashSync(password, 10);
   if (lookupemail(req.body.email)) {
   res.status(400);
   res.send('Error 400 exsisting user');
-}
+  }
   else if (req.body.email && req.body.password) {
 
   let randid = generateRandomString()
@@ -153,15 +153,6 @@ app.get("/", (req, res) => {
   };
   res.render('urls_home', templateVars)
 });
-
-
-
-
-
-/*app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-}); */
-
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
@@ -176,8 +167,6 @@ const userUrls = {};
 
     }
   }
-
-// console.log(userUrls)
   let templateVars = {
     urls: userUrls,
     Uobject: users[req.session.user_id]
@@ -191,8 +180,6 @@ const userUrls = {};
   }
 });
 
-// edit the post so shortURL-longURL key-value pair are saved to the urlDatabase
-
 app.post("/urls", (req, res) => {
   let rand = generateRandomString()
   let cook = req.session.user_id
@@ -200,21 +187,14 @@ app.post("/urls", (req, res) => {
     longURL: req.body.longURL,
     userid: cook
 }
-//console.log()
-//  urlDatabase[rand] = req.body.longURL;
-// Log the POST request body to the console
-  res.redirect(`/urls/${rand}`);         // Respond with 'Ok' (we will replace this)
+  res.redirect(`/urls/${rand}`);         
 });
 
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   let cook = req.session.user_id
-
   if (urlDatabase[req.params.shortURL].userid === cook) {
-
   delete urlDatabase[req.params.shortURL]
-
-
   res.redirect('/urls');}
   else {
     res.status(418)
@@ -223,11 +203,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 });
 
-
-
-
-
-// new one
 app.get("/urls/new", (req, res) => {
   let templateVars = {
     Uobject: users[req.session.user_id]
@@ -239,16 +214,11 @@ app.get("/urls/new", (req, res) => {
 }
 });
 
-
-
 app.get("/u/:shortURL", (req, res) => {
   const longURL1 = perdata[req.params.shortURL].longURL
 
   res.redirect(longURL1);
 });
-
-
-
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
     URLs: urlDatabase,
@@ -256,10 +226,6 @@ app.get("/urls/:shortURL", (req, res) => {
     longURL: urlDatabase[req.params.shortURL].longURL,
     Uobject: users[req.session.user_id]
   };
-
-console.log(req.session.user_id)
-// console.log(urlDatabase[req.params.shortURL].userid)
-
   if(req.session.user_id) {
       if(req.session.user_id === urlDatabase[req.params.shortURL].userid) {
     res.render("urls_show", templateVars)
@@ -267,34 +233,22 @@ console.log(req.session.user_id)
   else {
     res.send('thats not your link')
   }
-
   }
   else {
     res.redirect('/login')
   }
-
-
 });
-
-
-
 app.post("/urls/:shortURL/update", (req, res) => {
-// take in form answer
-// replace value for provided key
 let cook = req.session.user_id
   if (urlDatabase[req.params.shortURL].userid === cook) {
   urlDatabase[req.params.shortURL].longURL = req.body.newURL
 console.log(urlDatabase)
 res.redirect("/urls/" + req.params.shortURL)
-}
-  else {
+  } else {
     res.status(418)
-    res.send('you dirty bird')
+    res.send('not aloud acces')
   }
 });
-
-
-
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
